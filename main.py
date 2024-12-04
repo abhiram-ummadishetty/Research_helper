@@ -9,6 +9,8 @@ from langchain.document_loaders import UnstructuredURLLoader
 from langchain.document_loaders import UnstructuredPDFLoader
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from htmlTemplate import css,bot_template, user_template
@@ -57,7 +59,8 @@ def split_data(data,main_placeEditor):
     return docs
 
 def embed_data(docs,main_placeEditor):
-    embedding = OpenAIEmbeddings()
+    #
+    embedding = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key="AIzaSyBARBlxG1FJEZk5ckDhv2GJ3yZyREiaSz4")
     vectorstore = FAISS.from_documents(docs, embedding)
     main_placeEditor.text("Document Embedded....... ✅✅")
     time.sleep(2)
@@ -68,8 +71,11 @@ def save_data(vectorstore):
         pickle.dump(vectorstore, f)
 
 
-llm = OpenAI(temperature=0.9,max_tokens=500)
+# llm = OpenAI(temperature=0.9,max_tokens=500)
 
+
+llm = ChatGoogleGenerativeAI(model="gemini-pro",google_api_key="AIzaSyBARBlxG1FJEZk5ckDhv2GJ3yZyREiaSz4",
+                             temperature=0.2,convert_system_message_to_human=True)
 def page_one():
     st.title("Article Research Tool 💹")
 
